@@ -37,7 +37,7 @@ module Grape
               )
             end
 
-            def authenticate(token, type: :access_token)
+            def authenticate(token, type: :access_token, request: nil)
               if type && type.to_sym == :refresh_token
                 first(refresh_token: token.to_s)
               else
@@ -57,6 +57,10 @@ module Grape
           def revoke!(revoked_at = Time.now)
             set(revoked_at: revoked_at.utc)
             save(columns: [:revoked_at], validate: false)
+          end
+
+          def token_type
+            'bearer'
           end
 
           def to_bearer_token

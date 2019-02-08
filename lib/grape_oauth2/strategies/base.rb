@@ -40,6 +40,17 @@ module Grape
           def expose_to_bearer_token(token)
             Rack::OAuth2::AccessToken::Bearer.new(token.to_bearer_token)
           end
+
+          # Exposes token object mac token.
+          #
+          # @param token [#to_mac_token]
+          #   any object that responds to `to_mac_token`
+          # @return [Rack::OAuth2::AccessToken::Mac]
+          #   mac token instance
+          #
+          def expose_to_mac_token(token)
+            Rack::OAuth2::AccessToken::MAC.new(token.to_mac_token)
+          end
         end
       end
     end

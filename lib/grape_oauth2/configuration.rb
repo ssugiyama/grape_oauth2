@@ -42,6 +42,12 @@ module Grape
       #
       attr_accessor :token_generator_class_name
 
+      # Class name for the OAuth2 helper class that represents server resource
+      #
+      # @return [String] server resource class name
+      #
+      attr_accessor :server_resource_class_name
+
       #  OAuth2 grant types (flows) allowed to be processed
       #
       # @return [Array<String>] grant types
@@ -78,7 +84,7 @@ module Grape
       # Validates token value passed with the request params.
       def default_token_authenticator
         lambda do |request|
-          access_token_class.authenticate(request.access_token) || request.invalid_token!
+          access_token_class.authenticate(request.access_token, request: request) || request.invalid_token!
         end
       end
 
@@ -132,6 +138,7 @@ module Grape
       def initialize_classes
         self.scopes_validator_class_name = Grape::OAuth2::Scopes.name
         self.token_generator_class_name = Grape::OAuth2::UniqueToken.name
+        self.server_resource_class_name = Rack::OAuth2::Server::Resource::Bearer.name
       end
 
       # Sets authenticators to gem defaults.

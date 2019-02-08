@@ -11,7 +11,11 @@ module Grape
             request.invalid_client! if client.nil?
 
             token = config.access_token_class.create_for(client, nil, scopes_from(request))
-            expose_to_bearer_token(token)
+            if token.token_type == 'mac'
+              expose_to_mac_token(token)
+            else
+              expose_to_bearer_token(token)
+            end
           end
         end
       end

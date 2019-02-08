@@ -27,6 +27,11 @@ module Grape
         scopes_validator_class_name.constantize
       end
 
+      # Returns Server Resource class by configured name
+      def server_resource
+        server_resource_class_name.constantize
+      end
+
       # Returns Token Generator class by configured name
       def token_generator
         token_generator_class_name.constantize

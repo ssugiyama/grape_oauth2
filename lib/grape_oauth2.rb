@@ -15,6 +15,7 @@ require 'grape_oauth2/unique_token'
 # Mixins
 if defined?(ActiveRecord::Base)
   require 'grape_oauth2/mixins/active_record/access_token'
+  require 'grape_oauth2/mixins/active_record/mac_access_token'
   require 'grape_oauth2/mixins/active_record/access_grant'
   require 'grape_oauth2/mixins/active_record/client'
 end
@@ -83,7 +84,7 @@ module Grape
 
       # Grape::OAuth2 default middleware.
       def middleware
-        [Rack::OAuth2::Server::Resource::Bearer, config.realm, config.token_authenticator]
+        [config.server_resource, config.realm, config.token_authenticator]
       end
 
       # Method for injecting Grape::OAuth2 endpoints and helpers
