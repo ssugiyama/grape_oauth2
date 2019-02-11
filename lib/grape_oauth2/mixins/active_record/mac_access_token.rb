@@ -28,6 +28,7 @@ module Grape
           def to_mac_token
             {
               access_token:  token,
+              token_type:    'mac',
               mac_key:       secret,
               mac_algorithm: algorithm ||  'hmac-sha-256',
               expires_in:    expires_at && Grape::OAuth2.config.access_token_lifetime.to_i,

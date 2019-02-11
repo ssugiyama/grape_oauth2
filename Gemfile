@@ -10,7 +10,7 @@ gem 'bcrypt'
 
 group :test do
   platforms :ruby, :mswin, :mswin64, :mingw, :x64_mingw do
-    gem 'sqlite3'
+    gem 'sqlite3', '~> 1.3.6'
   end
 
   gem 'coveralls', require: false

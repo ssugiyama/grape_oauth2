@@ -6,14 +6,8 @@ module Grape
       module MacAccessToken
         extend ActiveSupport::Concern
         include Grape::OAuth2::Sequel::AccessToken
-        included do
-          validates :secret, :presence => true
-          validates :algorithm, :presence => true, :inclusion => [
-            'hmac-sha-1',
-            'hmac-sha-256'
-          ]
-          before_validation :generate_secret, on: :create
-          
+        included do         
+
           def before_validation
             if new?
               generate_secret
@@ -31,9 +25,9 @@ module Grape
           class << self
             def authenticate(token, type: :access_token, request: nil)
               if type && type.to_sym == :refresh_token
-                find_by(refresh_token: token.to_s)
+                first(refresh_token: token.to_s)
               else
-                found = find_by(token: token.to_s)
+                found = first(token: token.to_s)
                 found && Rack::OAuth2::AccessToken::MAC.new(found.to_mac_token).verify!(request) && found
               end
             end
@@ -42,6 +36,7 @@ module Grape
           def to_mac_token
             {
               access_token:  token,
+              token_type:    'mac',
               mac_key:       secret,
               mac_algorithm: algorithm ||  'hmac-sha-256',
               expires_in:    expires_at && Grape::OAuth2.config.access_token_lifetime.to_i,

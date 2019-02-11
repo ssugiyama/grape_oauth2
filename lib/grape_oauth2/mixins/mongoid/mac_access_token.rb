@@ -11,7 +11,10 @@ module Grape
           field :algorithm, type: String
           before_validation :generate_secret, on: :create
           validates :secret, presence: true
-          validates :algorithm, presence: true
+          validates :algorithm, :presence => true, :inclusion => [
+            'hmac-sha-1',
+            'hmac-sha-256'
+          ]
           
           class << self
             def authenticate(token, type: :access_token, request: nil)
