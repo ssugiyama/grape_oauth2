@@ -15,18 +15,18 @@ module Grape
             'hmac-sha-1',
             'hmac-sha-256'
           ]
-          
+
           class << self
             def authenticate(token, type: :access_token, request: nil)
               if type && type.to_sym == :refresh_token
                 find_by(refresh_token: token.to_s)
               else
                 found = find_by(token: token.to_s)
-                found && Rack::OAuth2::AccessToken::MAC.new(found.to_mac_token).verify!(request) && found
+                found && (request.nil? || Rack::OAuth2::AccessToken::MAC.new(found.to_mac_token).verify!(request)) && found
               end
             end
           end
- 
+
           def to_mac_token
             {
               access_token:  token,
@@ -36,7 +36,7 @@ module Grape
               refresh_token: refresh_token,
             }
           end
-        
+
           def token_type
             'mac'
           end

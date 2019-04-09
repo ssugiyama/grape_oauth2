@@ -6,7 +6,7 @@ module Grape
       module MacAccessToken
         extend ActiveSupport::Concern
         include Grape::OAuth2::Sequel::AccessToken
-        included do         
+        included do
 
           def before_validation
             if new?
@@ -15,7 +15,7 @@ module Grape
 
             super
           end
-          
+
           def validate
             super
             validates_presence :secret
@@ -28,11 +28,11 @@ module Grape
                 first(refresh_token: token.to_s)
               else
                 found = first(token: token.to_s)
-                found && Rack::OAuth2::AccessToken::MAC.new(found.to_mac_token).verify!(request) && found
+                found && (request.nil? || Rack::OAuth2::AccessToken::MAC.new(found.to_mac_token).verify!(request)) && found
               end
             end
           end
- 
+
           def to_mac_token
             {
               access_token:  token,
@@ -43,7 +43,7 @@ module Grape
               refresh_token: refresh_token,
             }
           end
-        
+
           def token_type
             'mac'
           end
